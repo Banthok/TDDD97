@@ -1,0 +1,238 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#welcome_container input[type=text], #welcome_container input[type=email], #welcome_container input[type=password] {
+    width: 100%;
+}
+
+#welcome_container input[type=submit] {
+    position: absolute;
+    right: 0px;
+}
+
+#welcome_container form {
+    position: relative;
+
+    /*border: 3px solid yellow; */
+    /* background-color: #333333; */
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.desc_text_input {
+    float: left;
+    width: 45%;
+}
+
+.text_input {
+    float: left;
+    width: 55%;
+}
+
+/* TODO review this */
+.row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* *** Welcome view ***
+    id-specific stylings
+*/
+
+#welcome_container {
+    position: relative;
+
+    height: 400px;
+    width: 600px;
+
+    margin: auto;
+    margin-top: 100px;
+}
+
+#left_div_container {
+    position: absolute;
+
+    height: 100%;
+    width: 340px;
+
+    border: 3px solid orange;
+}
+
+#right_div_container {
+    position: absolute;
+    left: 350px;
+
+    height: 100%;
+    width: 250px;
+    border: 3px solid orange;
+}
+
+#logo_and_slogan {
+    height: 100%;
+
+    border: 3px solid blue;
+    /* background-color: #334499; */
+}
+
+#login_container {
+    height: calc(30% - 10px);
+    width: 100%;
+
+    margin-bottom: 10px;
+
+    padding: 3px;
+
+    border: 3px solid red;
+    /* background-color: #771122; */
+}
+
+#signup_container {
+    height: 70%;
+    width: 100%;
+
+    padding: 3px;
+
+    border: 3px solid green;
+    /* background-color: #119922; */
+}
+
+#signup_server_status {
+    color: red;
+}
+
+#signin_server_status {
+    color: red;
+}
+
+
+/* *** Profile view ***
+    id-specific stylings
+*/
+
+#caramel_bar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+
+    height: 40px;
+    width: 100%;
+
+    background-color: #b0883a;
+}
+
+#caramel_navigation {
+    width: 60%;
+
+    margin: auto;
+
+    font-weight: bold;
+    color: #ffffdd;
+}
+
+#caramel_navigation > * {
+    float: left;
+}
+
+#caramel_home, #caramel_browse, #caramel_account {
+    margin-top: 6px;
+    margin-right: auto;
+    margin-bottom: 6px;
+    margin-left: auto;
+
+    padding-left: 16px;
+    padding-right: 16px;
+
+    line-height: 26px;
+
+    border-style: solid;
+    border-width: 0px 0px 3px 0px;
+    border-color: #b0883a; /* Hidden */
+}
+
+#caramel_search_bar {
+    display: none;
+}
+
+#caramel_search_bar > * {
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#caramel_search_bar > input[type=text] {
+    width: 160px;
+}
+
+#caramel_search_bar > input[type=submit] {
+    -ms-transform: translate(160px, -50%);
+    transform: translate(160px, -50%);
+}
+
+#session_container {
+    margin-top: 40px;
+}
+
+#home_container, #browse_container, #account_container {
+    display: none;
+}
+
+#home_content_container {
+    width: 1120px;
+
+    margin: auto;
+    margin-top: 10px;
+}
+
+#left_home_content_container {
+    width: 200px;
+
+    margin-right: 10px;
+
+    float: left;
+
+    border: 3px solid orange;
+}
+
+#wall_home_content_container {
+    width: 700px;
+
+    margin-right: 10px;
+
+    padding-left: 16px;
+    padding-right: 16px;
+
+    float: left;
+
+    border: 3px solid blue;
+}
+
+#right_home_content_container {
+    width: 200px;
+
+    float: left;
+
+    border: 3px solid orange;
+}
+
+#wall_refresh_container, #wall_messages_container {
+    border-top: 1px solid #bbbbbb;
+}
+
+#wall_messages_placeholder {
+    text-align: center;
+    font-style: italic;
+    color: #aaaaaa;
+}
+
+#browse_content_container {
+    display: none; /* Initializing value */
+}

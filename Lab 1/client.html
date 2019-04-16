@@ -1,0 +1,219 @@
+<html>
+<head>
+    <link href="client.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="client.js" type="text/javascript"></script>
+    <script src="serverstub.js" type="text/javascript"></script>
+    <!-- HTML for the welcome view -->
+    <script type="text/view" id="welcomeview">
+    <div id="welcome_container">
+        <div id="left_div_container">
+            <div id="logo_and_slogan">
+                logo_and_slogan
+            </div>
+        </div>
+        <div id="right_div_container">
+            <div id="login_container">
+                <form id="form_signin" method="POST" action="">
+                    <div class="row">
+                        <div class="desc_text_input">
+                            Email
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signin_email" type="email" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            Password
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signin_password" type="password" required />
+                        </div>
+                    </div>
+                    <input type="submit" value="Log in" />
+                </form>
+                <div class="row" id="signin_server_status">
+                </div>
+            </div>
+            <div id="signup_container">
+                <form id="form_signup" method="POST" action="">
+                    <div class="row">
+                        <div class="desc_text_input">
+                            First Name
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signup_firstname" type="text" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            Family Name
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signup_familyname" type="text" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            Gender
+                        </div>
+                        <div class="text_input">
+                            <select id="select_signup_gender" name="gender">
+                                <option value="Male">Male</option>
+                                <option value="Male">Female</option>
+                                <option value="Male">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            City
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signup_city" type="text" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            Country
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signup_country" type="text" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            Email
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signup_email" type="email" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            Password
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signup_password" type="password" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="desc_text_input">
+                            <i class="material-icons" style="vertical-align: middle; font-size: 20px;">repeat</i> Password <!-- &#10226; -->
+                        </div>
+                        <div class="text_input">
+                            <input id="input_signup_repeat_password" type="password" required />
+                        </div>
+                    </div>
+                    <input id="signup_form_submit" type="submit" value="Sign up" disabled />
+                </form>
+                <div class="row" id="signup_form_status">
+                </div>
+                <div class="row" id="signup_server_status">
+                </div>
+            </div>
+        </div>
+    </div>
+    </script>
+    <!-- HTML for the logged in session view -->
+    <script type="text/view" id="profileview">
+    <div id="caramel_bar">
+        <div id="caramel_navigation">
+            <div class="clickable" id="caramel_home">
+                Home
+            </div>
+            <div class="clickable" id="caramel_account">
+                Account
+            </div>
+            <div class="clickable" id="caramel_browse">
+                Browse
+            </div>
+            <form id="caramel_search_bar" method="POST" action="">
+                <input id="caramel_search_input" type="text" />
+                <input id="caramel_search_submit" type="submit" value="Search" />
+            </form>
+        </div>
+    </div>
+    <div id="session_container">
+        <div id="home_container">
+            Home
+            <div id="home_content_container">
+                <div id="left_home_content_container">
+                    <ul id="ul_personal_information">
+                    </ul>
+                </div>
+                <div id="wall_home_content_container">
+                    <div id="wall_post_container">
+                        <textarea id="wall_textarea" placeholder="Give user the power to input arbitrary unsanitized HTML content - what could possibly go wrong?"></textarea>
+                        <button id="post_button">Post</button>
+                    </div>
+                    <div id="wall_refresh_container">
+                        <button id="refresh_button">Refresh</button>
+                    </div>
+                    <div id="wall_messages_container">
+                        <div id="wall_messages_placeholder">There seems to be nothing here
+                        </div>
+                    </div>
+                </div>
+                <div id="right_home_content_container">
+                    this is a nice container :<sup>)</sup>
+                </div>
+            </div>
+        </div>
+        <div id="account_container">
+            Account
+            <form id="form_updatepw">
+                <label for="input_updatepw_old_password">Old Password</label>
+                <input id="input_updatepw_old_password" type="password" required />
+                <label for="input_updatepw_new_password">New Password</label>
+                <input id="input_updatepw_new_password" type="password" required />
+                <label for="input_updatepw_repeat_new_password">Repeat New Password</label>
+                <input id="input_updatepw_repeat_new_password" type="password" required />
+                <input id="form_updatepw_submit" type="submit" />
+            </form>
+            <div id="updatepw_status">
+            </div>
+            <div id="updatepw_server_status">
+            </div>
+            <button id="signout_button" type="button">Sign out</button>
+        </div>
+        <div id="browse_container">
+                <div id="browse_content_container">
+                    <div id="left_browse_content_container">
+                        <ul id="ul_browse_personal_information">
+                        </ul>
+                    </div>
+                    <div id="wall_browse_content_container">
+                        <div id="wall_browse_post_container">
+                            <textarea id="wall_browse_textarea" placeholder="Give user the power to input arbitrary unsanitized HTML content - what could possibly go wrong?"></textarea>
+                            <button id="post_button">Post</button>
+                        </div>
+                        <div id="wall_browse_refresh_container">
+                            <button id="refresh_button">Refresh</button>
+                        </div>
+                        <div id="wall_browse_messages_container">
+                            <div id="wall_browse_messages_placeholder">There seems to be nothing here
+                            </div>
+                        </div>
+                    </div>
+                    <div id="right_browse_content_container">
+                        this is a nice container :<sup>)</sup>
+                    </div>
+                </div>
+        </div>
+    </div>
+    </script>
+</head>
+
+<body>
+    <div id="page_container">
+    </div>
+</body>
+
+<!-- maybe TODO: Home and Browse tabs to use one and the same HTML templating.
+    * Home automatically loads the page template and inserts relevant data.
+    * Browse does not load/display anything but the search bar.
+    * Upon successful search, display the HTML template and insert data relevant to the email provided for the search. -->
+
+</html>

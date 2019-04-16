@@ -1,0 +1,1 @@
+* css consistency between home and browse
