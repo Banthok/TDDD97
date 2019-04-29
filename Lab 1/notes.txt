@@ -1,1 +1,16 @@
-* css consistency between home and browse
+* make scroll bar always visible, but disabled when page is too small
+
+
+Ways to generalize refreshWall (eventlistener and callable function (no parameters)):
+
+Finding email for browse
+ * Use sessionstorage for browse context ("whose wall are we refreshing again?")
+ * save context in sessionStorage or relevant object data member
+
+ *** When we browse users, on successful search, store data object in sessionStorage - "lastSearch"
+
+determining which wall to refresh (eventlistener dispatcher)
+* using dom nav (aunt/uncle element)
+* if event.target  == home_refresh
+elseif ... browse_refresh
+* save context in sessionStorage or relevant object data member

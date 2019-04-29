@@ -7,14 +7,11 @@ var init = function(){
 }
 
 var displayView = function(){
-    var pageElement = document.getElementById('page_container');
+    var pageElement = document.getElementById("page_container");
     var token = localStorage.getItem("token");
     var response;
     var defaultTab;
     var defaultNav;
-
-
-    // clear userdata in sessionStorage if it exists? Think thoroughly about when and how often we should be requesting userdata from the server, and when we should discord the local data.
 
     if( token !== null ) {
         /* Retrieve user data from server */
@@ -22,14 +19,11 @@ var displayView = function(){
         /* response is an Object with fields "success" and "message". If "success" field has boolean value true, a third field "data" is included in the object.
         The "data" field holds an object with fields that correspond to the sign up process - password excluded. */
         if( response.success === true ) {
-            // Consider the implications of storing the user data locally during the session. How often do we have to access it? Updating user data on the server? The benefits?
-            // sessionStorage.setItem("userData", JSON.stringify(response.data));
-
             /* Get the profile page and initialize it */
             pageElement.innerHTML = document.getElementById('profileview').innerHTML;
 
             populateListPersonalInformation(document.getElementById("ul_personal_information"), response.data);
-            refreshHomeWall();
+            refreshWall(document.getElementById("wall_home_messages_container"));
 
             defaultTab = document.getElementById('home_container');
             defaultNav = document.getElementById('caramel_home');
@@ -68,6 +62,7 @@ var attachHandlers = function() {
     var signupRepeatPasswordInput;
 
     /* Profile/Session view variables */ //Profile -> Session? [cascading]
+    var caramelBar;
     var navigation = document.getElementById('caramel_navigation');
     var navigationHome;
     var navigationAccount;
@@ -84,11 +79,13 @@ var attachHandlers = function() {
     var updatePasswordRepeatPasswordInput;
 
     var home = document.getElementById('home_container');
-    var postButton;
-    var refreshButton;
+    var homePostButton;
+    var homeRefreshButton;
 
     var browse = document.getElementById('browse_container');
     var searchForm;
+    var browsePostButton;
+    var browseRefreshButton;
 
     /* Handlers for welcome view - Signin form */
     if( signin != null ) {
@@ -115,6 +112,7 @@ var attachHandlers = function() {
 
     /* Handlers for profile view - Navigation bar */
     if( navigation != null ) {
+        caramelBar = document.getElementById('caramel_bar');
         navigationHome = document.getElementById('caramel_home');
         navigationAccount = document.getElementById('caramel_account');
         navigationBrowse = document.getElementById('caramel_browse');
@@ -142,7 +140,7 @@ var attachHandlers = function() {
             }
         };
 
-        // make a changeBackgroundColor = function (element , color){} - element = -this-?
+        // change this to css styling using the hover selector
         navigationHome.addEventListener("mouseover", function() {navigationHome.style.backgroundColor = "#967533" });
         navigationBrowse.addEventListener("mouseover", function() {navigationBrowse.style.backgroundColor = "#967533" });
         navigationAccount.addEventListener("mouseover", function() {navigationAccount.style.backgroundColor = "#967533" });
@@ -158,8 +156,11 @@ var attachHandlers = function() {
         navigationAccount.content = tabAccount;
         navigationAccount.addEventListener("click", tabSelector);
 
-        // document.getElementById("caramel_search_submit") <-- use for submit handler
-
+        caramelBar.addEventListener("click", function() {
+            var caramelErrorBox = document.getElementById("caramel_error");
+            caramelErrorBox.style.transition = "opacity 1s";
+            caramelErrorBox.style.opacity = "0";
+        });
     }
 
     /* Handlers for profile view - Account container */
@@ -181,21 +182,24 @@ var attachHandlers = function() {
 
     /* Handlers for profile view - Home container */
     if( home != null ){
-        postButton = document.getElementById('post_button');
-        refreshButton = document.getElementById('refresh_button');
+        homePostButton = document.getElementById('home_post_button');
+        homeRefreshButton = document.getElementById('home_refresh_button');
 
-        postButton.addEventListener("click", postRequest);
-        refreshButton.addEventListener("click", refreshHomeWall);
-
-
+        homePostButton.addEventListener("click", postRequestListener);
+        homeRefreshButton.addEventListener("click", refreshWallDispatcher);
     }
 
     /* Handlers for profile view - Browse container */
     if( browse != null ){
         searchForm = document.getElementById("caramel_search_bar");
+        browsePostButton = document.getElementById("browse_post_button");
+        browseRefreshButton = document.getElementById("browse_refresh_button");
 
         searchForm.setAttribute("onsubmit", "return false");
         searchForm.addEventListener("submit", searchSubmit);
+
+        browsePostButton.addEventListener("click", postRequestListener);
+        browseRefreshButton.addEventListener("click", refreshWallDispatcher);
     }
 
 
@@ -307,30 +311,54 @@ var signoutRequest = function() {
     }
 }
 
-var postRequest = function() { //consider making generic and adding attributes to the button elements => event.currentTarget.attachedTextSource
+var postRequestListener = function(event) {
     var token = localStorage.getItem("token");
-    var textArea = document.getElementById("wall_textarea"); // Not sanitized content
+    var textArea; // Not sanitized content
+    var wall;
+    var recipientEmail;
+    var response;
 
-    var response = serverstub.getUserDataByToken(token);
-    /* response is an Object with fields "success" and "message". If "success" field has boolean value true, a third field "data" is included in the object.
-    The "data" field holds an object with fields that correspond to the sign up process - password excluded. */
+    /* Acquire arguments */
+    if( event.currentTarget === document.getElementById("home_post_button") ){
+        textArea = document.getElementById("wall_home_textarea");
+        wall = document.getElementById("wall_home_messages_container");
+        recipientEmail = serverstub.getUserDataByToken(token).data.email; // Potentially superfluous. Current postMessage implementation checks if email == null, and assumes it is a self post if that is the case. Documentation does not suggest the implementation has to work that way though.
+    } else { /* Posting on browse tab */
+        textArea = document.getElementById("wall_browse_textarea");
+        wall = document.getElementById("wall_browse_messages_container");
+        recipientEmail = JSON.parse(sessionStorage.getItem("lastSearch")).email;
+    }
+
+    response = serverstub.postMessage(token, textArea.value, recipientEmail);
 
     if( response.success === true ){
-        serverstub.postMessage(token, textArea.value, response.data.email);
         textArea.value = "";
-        refreshHomeWall();// refreshWall or whatever
+        refreshWall(wall);
     } else {
         window.alert("I'm a little server, small - not tough. I couldn't process, any of your stuff.");
     }
-
-
 }
 
-var refreshHomeWall = function() { // Generalize? Home and Browse pages and functions are very similar
-    var token = localStorage.getItem("token");
-    var wall = document.getElementById("wall_messages_container");
+// TODO: This just doesn't feel great.
+var refreshWallDispatcher = function(event) {
+    if( event.currentTarget === document.getElementById("home_refresh_button") ){
+        refreshWall(document.getElementById("wall_home_messages_container"));
+    } else {
+        refreshWall(document.getElementById("wall_browse_messages_container"));
+    }
+}
 
-    var response = serverstub.getUserMessagesByToken(token);
+var refreshWall = function(wall) {
+    var token = localStorage.getItem("token");
+    var response;
+    var email;
+
+    if( wall === document.getElementById("wall_home_messages_container") ){
+        response = serverstub.getUserMessagesByToken(token);
+    } else {
+        email = JSON.parse(sessionStorage.getItem("lastSearch")).email;
+        response = serverstub.getUserMessagesByEmail(token, email);
+    }
     /* response is an Object with fields "success" and "message". If "success" field has boolean value true, a third field "data" is included in the object.
     The "data" field holds an array with objects with fields "writer" and "content". */
 
@@ -346,30 +374,47 @@ var refreshHomeWall = function() { // Generalize? Home and Browse pages and func
             messageContainer.appendChild(textNode);
             wall.appendChild(messageContainer);
         });
+        /* There were no messages */
+        if( wall.firstChild === null ){
+            wall.appendChild(generatePlaceholderMessage());
+        }
     } else {
         window.alert("I'm a little server, small - not tough. I couldn't process, any of your stuff.");
     }
 }
 
 var searchSubmit = function() {
-    var myToken = localStorage.getItem("token");
+    var token = localStorage.getItem("token");
     var email = document.getElementById("caramel_search_input").value;
     var hiddenBrowseContent = document.getElementById("browse_content_container");
     var profileDataList = document.getElementById("ul_browse_personal_information");
+    var messageWall = document.getElementById("wall_browse_messages_container");
+    var caramelErrorBox = document.getElementById("caramel_error");
 
-    var responseData = serverstub.getUserDataByEmail(myToken, email);
-    var responseMessages = serverstub.getUserMessagesByEmail(myToken, email);
+    var responseData = serverstub.getUserDataByEmail(token, email);
+    var responseMessages = serverstub.getUserMessagesByEmail(token, email);
 
     if( responseData.success === true && responseMessages.success === true ){
         hiddenBrowseContent.style.display = "block"; // Currently only relevant once
 
+        /* Store found user's data locally. To be used for context in functions involving the browse tab content. */
+        sessionStorage.setItem("lastSearch", JSON.stringify(responseData.data));
+
         populateListPersonalInformation(profileDataList, responseData.data);
-        //refreshWall();
+        refreshWall(messageWall);
+        // Clear search input ?
+    } else if( responseData.success === false ) {
+        caramelErrorBox.textContent = responseData.message;
+        caramelErrorBox.style.transition = "";
+        caramelErrorBox.style.opacity = "1";
+    } else if( responseMessages.success === false ) {
+        caramelErrorBox.textContent = responseMessages.message;
+        caramelErrorBox.style.transition = "";
+        caramelErrorBox.style.opacity = "1";
     }
 }
 
 var populateListPersonalInformation = function(personalInformationList, userData) {
-    //var personalInformationList = document.getElementById("ul_personal_information");
     var listItem;
     var textNode;
 
@@ -378,7 +423,7 @@ var populateListPersonalInformation = function(personalInformationList, userData
         personalInformationList.firstChild.remove();
     }
 
-    //generalize for horizontally flat objects
+    //generalize for horizontally flat objects?
     listItem = document.createElement("LI")
     textNode = document.createTextNode(userData.email);
     listItem.appendChild(textNode);
@@ -405,6 +450,14 @@ var populateListPersonalInformation = function(personalInformationList, userData
     personalInformationList.appendChild(listItem);
 }
 
+var generatePlaceholderMessage = function(){
+    var messageContainer = document.createElement("div");
+    messageContainer.classList.add("wall_messages_placeholder");
+    var placeholderText = document.createTextNode("There seems to be nothing here");
+    messageContainer.appendChild(placeholderText);
+
+    return messageContainer;
+}
 
 // Think about use cases.
 var validatePassword = function(passwordElmt, rPasswordElmt) {

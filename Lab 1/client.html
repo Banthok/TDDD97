@@ -1,5 +1,8 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="utf-8" />
+    <title>Great Bay</title>
     <link href="client.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="client.js" type="text/javascript"></script>
@@ -129,35 +132,38 @@
             <div class="clickable" id="caramel_browse">
                 Browse
             </div>
-            <form id="caramel_search_bar" method="POST" action="">
-                <input id="caramel_search_input" type="text" />
-                <input id="caramel_search_submit" type="submit" value="Search" />
-            </form>
+            <div id="caramel_search_wrapper">
+                <form id="caramel_search_bar" method="POST" action="">
+                    <input id="caramel_search_input" type="text" />
+                    <input id="caramel_search_submit" type="submit" value="Search" />
+                </form>
+            </div>
+            <div id="caramel_error">testing message</div>
         </div>
     </div>
     <div id="session_container">
         <div id="home_container">
-            Home
-            <div id="home_content_container">
-                <div id="left_home_content_container">
+            <div class="content_box" id="home_content_container">
+                <div class="left_column" id="left_home_content_container">
                     <ul id="ul_personal_information">
                     </ul>
                 </div>
-                <div id="wall_home_content_container">
+                <div class="content_column" id="wall_home_content_container">
                     <div id="wall_post_container">
-                        <textarea id="wall_textarea" placeholder="Give user the power to input arbitrary unsanitized HTML content - what could possibly go wrong?"></textarea>
-                        <button id="post_button">Post</button>
+                        <textarea id="wall_home_textarea" placeholder="Give user the power to input arbitrary unsanitized HTML content - what could possibly go wrong?"></textarea>
+                        <button id="home_post_button">Post</button>
                     </div>
-                    <div id="wall_refresh_container">
-                        <button id="refresh_button">Refresh</button>
+                    <div class="wall_sub_content" id="wall_refresh_container">
+                        <button id="home_refresh_button">Refresh</button>
                     </div>
-                    <div id="wall_messages_container">
-                        <div id="wall_messages_placeholder">There seems to be nothing here
+                    <div class="wall_sub_content" id="wall_home_messages_container">
+                        <div class="wall_messages_placeholder">There seems to be nothing here
                         </div>
                     </div>
                 </div>
-                <div id="right_home_content_container">
+                <div class="right_column" id="right_home_content_container">
                     this is a nice container :<sup>)</sup>
+                    Home
                 </div>
             </div>
         </div>
@@ -179,26 +185,25 @@
             <button id="signout_button" type="button">Sign out</button>
         </div>
         <div id="browse_container">
-                <div id="browse_content_container">
-                    <div id="left_browse_content_container">
+                <div class="content_box" id="browse_content_container">
+                    <div class="left_column" id="left_browse_content_container">
                         <ul id="ul_browse_personal_information">
                         </ul>
                     </div>
-                    <div id="wall_browse_content_container">
+                    <div class="content_column" id="wall_browse_content_container">
                         <div id="wall_browse_post_container">
                             <textarea id="wall_browse_textarea" placeholder="Give user the power to input arbitrary unsanitized HTML content - what could possibly go wrong?"></textarea>
-                            <button id="post_button">Post</button>
+                            <button id="browse_post_button">Post</button>
                         </div>
-                        <div id="wall_browse_refresh_container">
-                            <button id="refresh_button">Refresh</button>
+                        <div class="wall_sub_content" id="wall_browse_refresh_container">
+                            <button id="browse_refresh_button">Refresh</button>
                         </div>
-                        <div id="wall_browse_messages_container">
-                            <div id="wall_browse_messages_placeholder">There seems to be nothing here
-                            </div>
+                        <div class="wall_sub_content" id="wall_browse_messages_container">
                         </div>
                     </div>
-                    <div id="right_browse_content_container">
+                    <div class="right_column" id="right_browse_content_container">
                         this is a nice container :<sup>)</sup>
+                        Browse
                     </div>
                 </div>
         </div>

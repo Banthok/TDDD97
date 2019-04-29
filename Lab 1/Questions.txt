@@ -1,0 +1,54 @@
+Questions for consideration:
+
+    1. We potentially reduce network traffic and server load by validating data client-side.
+    Load at client-side increases, but client won't have to wait for server replying with a failure state.
+
+    2. Several points to be made here:
+    * serverstub.getUserDataByToken(token); Only the token is required to acquire user data. We can essentially log in by providing a valid token.
+    * localStorage.getItem("token"); localStorage is a fairly safe way to store information locally inside the browser as it is only accessible by the origin site.
+    Arbitrary user scripting as a form of XSS on the site itself can however still expose locaStorage data.
+    * No user data is currently hidden from other users - damage potential is thus low.
+        - Passwords are hidden from all users. However, they are stored in plain text on the "server". Old password is required to make a new password.
+    * A person could be indefinitely impersonated as long as a token doesn't expire. Signing out removes the local active token as a key from the server loggedInUsers[token] map.
+        - If an attacker can acquire a valid token and then delete that token entry from the authentic user's localStorage,
+        there is currently no way to for an authentic user to terminate an attacker's acquired access as the user requires the token to sign out and invalidate access.
+
+    In it's current iteration, the system is not very secure. However, guessing/brute forcing a token string is not feasible for an average user, given there are 62^36 possible ones (~ 2^216).
+    The attack vector that needs attention is the XSS one.
+
+    3. Currently, all user inputs stored on the server are only displayed client-side inside appended text nodes (document.createTextNode).
+    This means all user text is rendered as plain text and not live HTML code. While it makes our users safe from XSS,
+    it also means neither users nor developers can add HTML flavour to messages (links, font styling, images). Preferably, we'd like to sanitize input rather than electrocute it dead.
+    Sloppy sanitization though could enable XSS and make data such as the login tokens exposable. Counter measure should be well researched sanitization, but more importantly,
+    make the whole system more robust in terms of mitigation. Attacker got control of a login token? : Tie the token to IP or other pseudo-unique identifier, and force fresh login on fuckery.
+
+    4. Our website is a single page application - we never navigate between different HTML documents on the server,
+    so backwards and forwards takes us to whatever outside-of-our-origin pages we were visiting after/before. This behaviour may not be expected with some users.
+    Some users may expect the backwards and forwards options to be available to navigate within the site itself, complimentary to the provided navigation bar.
+    One solution is to modify the browser's state logic and history table during site navigation with properties/functions such as window.onpopstate and history.pushState, history.replaceState.
+
+    5. When the user refreshes our page, the page reloads. localStorage and sessionStorage (lastSearch) values are retained. If the user is logged it is brought back to the Home tab.
+    displayView() is run as part of window.onload() which loads in server data for the Home tab if the user is logged in. Text input that hasn't been submitted is lost.
+    The behaviour should fall within expectations. It could potentially be improved on.
+
+    6. Most common usage is likely to remain logged in on a private device. Sending the welcome view on every page load then seems like an excessive data transmit, although data amount is small.
+    However, keeping with the Single Page Application paradigm, in general serving the entire site will reduce server load and traffic.
+
+    7. Taking the essence of the question to one of its extremes - exposing too much of the inner workings of the server logic may provide unnecessary information to malicious users.
+    However, if we wanna provide feedback of any sort to the user as a result of server operations (e.g. "User already exists"), a derivable boolean state or something analogous is inevitable.
+
+    8. "Is it reliable to perform data validation at client-side?". In the absence of server-side data validation, no.
+    A user with malintent can change the page application experience and ignore client-side checks, so server-side data validation remains necessary.
+    There is however a case to be made for specific client-side data validation to protect users from themselves.
+
+    9. If you care about separation of 'semantic meaning'/content/structure and layout/presentation, then using <table> for the layout is a mistake.
+    You're restricting layout design by forcing a tabular structure on the content. If you are to update your page layout design at some point, you're probably going to have to revisit your html document.
+    Maybe you have users/developers with separated access, where layout design are to be done exclusively from the css file.
+    The <div> tag is a more natural container that allows logical structuring of the content, with less impact on its final presentation in the webpage.
+
+    10. Single Page Applications are responsive and dynamic, since most of the page interaction can happen at client-side using javascript.
+    Different html documents do not need to acquired from the server as the user navigates the site -
+    only certain data-manipulation operations has to be done server-side, and while making server requests we remain on the SPA.
+    From a development point of view, the considerations change. Browser operations may have behaviour that require javascript logic to normalize.
+    Page interactivity does not plummet to none with bad/intermittent connectivity, and with the right caching/synching, an SPA can remain functional even in an offline mode.
+    SPAs also has better decoupling between backend and frontend if one cares about that.
