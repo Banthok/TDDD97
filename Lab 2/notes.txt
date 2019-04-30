@@ -1,0 +1,1 @@
+* Ignore http status codes for now, implement them in lab 3
